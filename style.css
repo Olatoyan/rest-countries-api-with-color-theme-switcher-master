@@ -111,9 +111,9 @@ body {
   border: 0;
 }
 
-.search__input::placeholder {
+/* .search__input::placeholder {
   color: #fff;
-}
+} */
 
 .regions {
   /* background-color: #2b3945; */
@@ -133,7 +133,7 @@ body {
   gap: 8rem;
   /* margin-bottom: 4rem; */
   align-items: center;
-  /* justify-content: center; */
+  justify-content: center;
 }
 .country__box {
   display: flex;

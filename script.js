@@ -101,6 +101,7 @@ const renderCountry = function (data) {
 const renderDetails = function (data) {
   let borderCountries;
   let currencies;
+  let languages;
   if (!data.borders) {
     borderCountries = `<span class="border__name dark__element">No Border Countries</span>`;
   } else {
@@ -115,6 +116,17 @@ const renderDetails = function (data) {
     currencies = `<span class="details__span details__currency">No Currency</span>`;
   } else {
     currencies = `<span class="details__span details__currency">${data.currencies[0].name}</span>`;
+  }
+
+  if (!data.languages) {
+    languages = `<span class="details__span details__languages">No Languages</span>`;
+  } else {
+    languages = data.languages
+      .map(
+        (lang) =>
+          `<span class="details__span details__languages">${lang.name}</span>`
+      )
+      .join(", ");
   }
 
   console.log(borderCountries);
@@ -167,8 +179,8 @@ const renderDetails = function (data) {
                   <span class="details__span details__currency">${currencies}</span>
                 </p>
                 <p class="details__text">
-                Language: 
-                  <span class="details__span details__languages">${data.languages[0].name}</span>
+                Languages: 
+                  <span class="details__span details__languages">${languages}</span>
                 </p>
               </div>
             </div>
