@@ -279,6 +279,13 @@ const allCountries = async function () {
         countrySection.style.display = "flex";
         detailsSection.style.display = "none";
       }
+
+      if (e.target.closest(".border__name")) {
+        const name = e.target.textContent;
+        const findCountry = data.find((info) => info.alpha3Code.includes(name));
+        detailsSection.textContent = "";
+        renderDetails(findCountry);
+      }
     });
     const totalCountries = data.length;
     if (counter === totalCountries) {
