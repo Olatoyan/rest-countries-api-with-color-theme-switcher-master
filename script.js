@@ -34,38 +34,26 @@ switchTheme.addEventListener("click", function (e) {
   lightBox.classList.toggle("closed");
   if (e.target.closest(".light__box")) {
     container.style.backgroundColor = "#fafafa";
-    // darkModebg.style.backgroundColor = "#fff";
     body.style.color = "#111517";
+    body.style.fill = "#111517";
     regionsSelect.style.color = "#111517";
     darkModebg.forEach((bg) => (bg.style.backgroundColor = "#fff"));
-    // countryBox.style.backgroundColor = "#fff";
     countries.forEach((b) => (b.style.backgroundColor = "#fff"));
-    // searchInput.style.placeHolder = "#ff0";
 
     searchInput.style.setProperty("placeholder", "#ff0");
     searchInput.style.color = "#111517";
   } else if (e.target.closest(".dark__box")) {
     container.style.backgroundColor = "#202c37";
-    // darkModebg.style.backgroundColor = "#2b3945";
     body.style.color = "#fff";
+    body.style.fill = "#fff";
+
     darkModebg.forEach((bg) => (bg.style.backgroundColor = "#2b3945"));
     regionsSelect.style.color = "#fff";
     searchInput.style.color = "#fff";
-    // countryBox.style.backgroundColor = "#000";
-    searchInput.style.setProperty("placeholder", "#ff0");
 
     countries.forEach((b) => (b.style.backgroundColor = "#000"));
   }
 });
-// allCountryBox.textContent = "";
-// if (lightBox.classList.contains("closed")) {
-//   console.log(countries);
-//   countries.forEach((bg) => (bg.style.backgroundColor = "#fff"));
-// } else if (darkBox.classList.contains("closed")) {
-//   countries.forEach((bg) => (bg.style.backgroundColor = "#2b3945"));
-// }
-
-console.log(countries);
 
 const renderCountry = function (data) {
   let capital;
@@ -95,24 +83,6 @@ const renderCountry = function (data) {
     `;
 
   allCountryBox.insertAdjacentHTML("beforeend", html);
-  // console.log(countryBox);
-  const countries = document.querySelectorAll(".country__box");
-
-  // switchTheme.addEventListener("click", function (e) {
-  //   if (e.target.closest(".light__box")) {
-  //     countries.forEach((bg) => (bg.style.backgroundColor = "#fff"));
-  //   } else if (e.target.closest(".dark__box")) {
-  //     countries.forEach((bg) => (bg.style.backgroundColor = "#2b3945"));
-  //   }
-  // });
-  let r;
-  // if (lightBox.classList.contains("closed")) {
-  //   countries.forEach((bg) => (bg.style.backgroundColor = "#fff"));
-  // } else if (darkBox.classList.contains("closed")) {
-  //   countries.forEach((bg) => (bg.style.backgroundColor = "#2b3945"));
-  // }
-
-  // console.log(switchTheme);
 };
 const renderDetails = function (data) {
   let borderCountries;
@@ -151,11 +121,18 @@ const renderDetails = function (data) {
       .join(", ");
   }
 
-  console.log(borderCountries);
-
   const html = `
         <div class="back__box ">
-          <ion-icon class="arrow__back" name="arrow-back-outline"></ion-icon>
+        <svg
+        class="arrow__back"
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 256 256"
+        >
+          <path
+            d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"
+          ></path>
+        </svg>
+        
           <p class="back__text">Back</p>
         </div>
         <div class="details__container">
@@ -222,11 +199,8 @@ const allCountries = async function () {
   try {
     showLoadingSpinner();
 
-    // const res = await fetch("https://restcountries.com/v3.1/all");
     const res = await fetch("data.json");
     const data = await res.json();
-    console.log(data);
-    console.log(data[0].currencies);
 
     let counter = 0;
     data.forEach((info) => {
@@ -238,35 +212,30 @@ const allCountries = async function () {
       const selectedRegion = regionsSelect.value;
       if (selectedRegion === "africa") {
         const filteredData = data.filter((item) => item.region === "Africa");
-        console.log(filteredData);
         allCountryBox.textContent = "";
         filteredData.forEach((info) => {
           renderCountry(info);
         });
       } else if (selectedRegion === "america") {
         const filteredData = data.filter((item) => item.region === "Americas");
-        console.log(filteredData);
         allCountryBox.textContent = "";
         filteredData.forEach((info) => {
           renderCountry(info);
         });
       } else if (selectedRegion === "asia") {
         const filteredData = data.filter((item) => item.region === "Asia");
-        console.log(filteredData);
         allCountryBox.textContent = "";
         filteredData.forEach((info) => {
           renderCountry(info);
         });
       } else if (selectedRegion === "oceania") {
         const filteredData = data.filter((item) => item.region === "Oceania");
-        console.log(filteredData);
         allCountryBox.textContent = "";
         filteredData.forEach((info) => {
           renderCountry(info);
         });
       } else if (selectedRegion === "europe") {
         const filteredData = data.filter((item) => item.region === "Europe");
-        console.log(filteredData);
         allCountryBox.textContent = "";
         filteredData.forEach((info) => {
           renderCountry(info);
@@ -280,12 +249,9 @@ const allCountries = async function () {
     });
 
     searchInput.addEventListener("input", function () {
-      // console.log(searchInput.value);
       const search = searchInput.value.trim();
-      console.log(search);
       const searchedValue =
         search.charAt(0).toUpperCase() + search.slice(1).toLowerCase();
-      console.log(searchedValue);
       const filteredData = data.filter((item) =>
         item.name.includes(searchedValue)
       );
@@ -296,15 +262,12 @@ const allCountries = async function () {
     });
 
     allCountryBox.addEventListener("click", function (e) {
-      console.log(e.target);
       const selectedCountry = e.target
         .closest(".country__box")
         .querySelector(".country__name").textContent;
-      console.log(selectedCountry);
       const findCountry = data.find((info) =>
         info.name.includes(selectedCountry)
       );
-      console.log(findCountry);
       detailsSection.textContent = "";
       countrySection.style.display = "none";
       detailsSection.style.display = "flex";
@@ -312,7 +275,6 @@ const allCountries = async function () {
     });
 
     detailsSection.addEventListener("click", function (e) {
-      console.log(e.target.closest(".back__box"));
       if (e.target.closest(".back__box")) {
         countrySection.style.display = "flex";
         detailsSection.style.display = "none";
@@ -323,7 +285,6 @@ const allCountries = async function () {
       hideLoadingSpinner();
     }
   } catch (error) {
-    // console.log('Error:', error);
     alert(`${error}`);
     console.log(error);
     hideLoadingSpinner();
