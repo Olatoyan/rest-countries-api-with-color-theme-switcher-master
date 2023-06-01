@@ -18,6 +18,15 @@ const switchTheme = document.querySelector(".switch__theme-box");
 const lightBox = document.querySelector(".light__box");
 const darkBox = document.querySelector(".dark__box");
 const darkModebg = document.querySelectorAll(".dark__element");
+const loadingSpinner = document.querySelector(".loading-spinner");
+
+const showLoadingSpinner = function () {
+  loadingSpinner.style.display = "block";
+};
+
+const hideLoadingSpinner = function () {
+  loadingSpinner.style.display = "none";
+};
 
 switchTheme.addEventListener("click", function (e) {
   console.log(e.target);
@@ -59,6 +68,13 @@ switchTheme.addEventListener("click", function (e) {
 console.log(countries);
 
 const renderCountry = function (data) {
+  let capital;
+
+  if (!data.capital) {
+    capital = `<span class="country__span capital">No Capital</span>`;
+  } else {
+    capital = `<span class="country__span capital">${data.capital}</span>`;
+  }
   const html = `
           <div class="country__box  ">
             <img class="country__img" src="${data.flag}" />
@@ -72,7 +88,7 @@ const renderCountry = function (data) {
                 Region: <span class="country__span region">${data.region}</span>
               </p>
               <p class="country__text">
-                Capital: <span class="country__span capital">${data.capital}</span>
+                Capital: ${capital}
               </p>
             </div>
           </div>
@@ -102,13 +118,19 @@ const renderDetails = function (data) {
   let borderCountries;
   let currencies;
   let languages;
+
+  let capital;
+
+  if (!data.capital) {
+    capital = `<span class="country__span capital">No Capital</span>`;
+  } else {
+    capital = `<span class="country__span capital">${data.capital}</span>`;
+  }
   if (!data.borders) {
-    borderCountries = `<span class="border__name dark__element">No Border Countries</span>`;
+    borderCountries = `<span class="border__name ">No Border Countries</span>`;
   } else {
     borderCountries = data.borders
-      .map(
-        (border) => `<span class="border__name dark__element">${border}</span>`
-      )
+      .map((border) => `<span class="border__name ">${border}</span>`)
       .join(" ");
   }
 
@@ -132,7 +154,7 @@ const renderDetails = function (data) {
   console.log(borderCountries);
 
   const html = `
-        <div class="back__box dark__element">
+        <div class="back__box ">
           <ion-icon class="arrow__back" name="arrow-back-outline"></ion-icon>
           <p class="back__text">Back</p>
         </div>
@@ -165,8 +187,7 @@ const renderDetails = function (data) {
                   <span class="details__span details__sub-region">${data.subregion}</span>
                 </p>
                 <p class="details__text">
-                  Capital:
-                  <span class="details__span details__capital">${data.capital}</span>
+                  Capital: ${capital}
                 </p>
               </div>
               <div class="details__info-2">
@@ -198,102 +219,115 @@ const renderDetails = function (data) {
 };
 
 const allCountries = async function () {
-  // const res = await fetch("https://restcountries.com/v3.1/all");
-  const res = await fetch("data.json");
-  const data = await res.json();
-  console.log(data);
-  console.log(data[0].currencies);
+  try {
+    showLoadingSpinner();
 
-  // data.forEach((d) => console.log(d));
+    // const res = await fetch("https://restcountries.com/v3.1/all");
+    const res = await fetch("data.json");
+    const data = await res.json();
+    console.log(data);
+    console.log(data[0].currencies);
 
-  data.forEach((info) => {
-    renderCountry(info);
-  });
-
-  regionsSelect.addEventListener("change", function () {
-    const selectedRegion = regionsSelect.value;
-    if (selectedRegion === "africa") {
-      const filteredData = data.filter((item) => item.region === "Africa");
-      console.log(filteredData);
-      allCountryBox.textContent = "";
-      filteredData.forEach((info) => {
-        renderCountry(info);
-      });
-    } else if (selectedRegion === "america") {
-      const filteredData = data.filter((item) => item.region === "Americas");
-      console.log(filteredData);
-      allCountryBox.textContent = "";
-      filteredData.forEach((info) => {
-        renderCountry(info);
-      });
-    } else if (selectedRegion === "asia") {
-      const filteredData = data.filter((item) => item.region === "Asia");
-      console.log(filteredData);
-      allCountryBox.textContent = "";
-      filteredData.forEach((info) => {
-        renderCountry(info);
-      });
-    } else if (selectedRegion === "oceania") {
-      const filteredData = data.filter((item) => item.region === "Oceania");
-      console.log(filteredData);
-      allCountryBox.textContent = "";
-      filteredData.forEach((info) => {
-        renderCountry(info);
-      });
-    } else if (selectedRegion === "europe") {
-      const filteredData = data.filter((item) => item.region === "Europe");
-      console.log(filteredData);
-      allCountryBox.textContent = "";
-      filteredData.forEach((info) => {
-        renderCountry(info);
-      });
-    } else if (selectedRegion === "all") {
-      allCountryBox.textContent = "";
-      data.forEach((info) => {
-        renderCountry(info);
-      });
-    }
-  });
-
-  searchInput.addEventListener("input", function () {
-    // console.log(searchInput.value);
-    const search = searchInput.value.trim();
-    console.log(search);
-    const searchedValue =
-      search.charAt(0).toUpperCase() + search.slice(1).toLowerCase();
-    console.log(searchedValue);
-    const filteredData = data.filter((item) =>
-      item.name.includes(searchedValue)
-    );
-    allCountryBox.textContent = "";
-    filteredData.forEach((info) => {
+    let counter = 0;
+    data.forEach((info) => {
       renderCountry(info);
+      counter++;
     });
-  });
 
-  allCountryBox.addEventListener("click", function (e) {
-    console.log(e.target);
-    const selectedCountry = e.target
-      .closest(".country__box")
-      .querySelector(".country__name").textContent;
-    console.log(selectedCountry);
-    const findCountry = data.find((info) =>
-      info.name.includes(selectedCountry)
-    );
-    console.log(findCountry);
-    detailsSection.textContent = "";
-    countrySection.style.display = "none";
-    detailsSection.style.display = "flex";
-    renderDetails(findCountry);
-  });
+    regionsSelect.addEventListener("change", function () {
+      const selectedRegion = regionsSelect.value;
+      if (selectedRegion === "africa") {
+        const filteredData = data.filter((item) => item.region === "Africa");
+        console.log(filteredData);
+        allCountryBox.textContent = "";
+        filteredData.forEach((info) => {
+          renderCountry(info);
+        });
+      } else if (selectedRegion === "america") {
+        const filteredData = data.filter((item) => item.region === "Americas");
+        console.log(filteredData);
+        allCountryBox.textContent = "";
+        filteredData.forEach((info) => {
+          renderCountry(info);
+        });
+      } else if (selectedRegion === "asia") {
+        const filteredData = data.filter((item) => item.region === "Asia");
+        console.log(filteredData);
+        allCountryBox.textContent = "";
+        filteredData.forEach((info) => {
+          renderCountry(info);
+        });
+      } else if (selectedRegion === "oceania") {
+        const filteredData = data.filter((item) => item.region === "Oceania");
+        console.log(filteredData);
+        allCountryBox.textContent = "";
+        filteredData.forEach((info) => {
+          renderCountry(info);
+        });
+      } else if (selectedRegion === "europe") {
+        const filteredData = data.filter((item) => item.region === "Europe");
+        console.log(filteredData);
+        allCountryBox.textContent = "";
+        filteredData.forEach((info) => {
+          renderCountry(info);
+        });
+      } else if (selectedRegion === "all") {
+        allCountryBox.textContent = "";
+        data.forEach((info) => {
+          renderCountry(info);
+        });
+      }
+    });
 
-  detailsSection.addEventListener("click", function (e) {
-    console.log(e.target.closest(".back__box"));
-    if (e.target.closest(".back__box")) {
-      countrySection.style.display = "flex";
-      detailsSection.style.display = "none";
+    searchInput.addEventListener("input", function () {
+      // console.log(searchInput.value);
+      const search = searchInput.value.trim();
+      console.log(search);
+      const searchedValue =
+        search.charAt(0).toUpperCase() + search.slice(1).toLowerCase();
+      console.log(searchedValue);
+      const filteredData = data.filter((item) =>
+        item.name.includes(searchedValue)
+      );
+      allCountryBox.textContent = "";
+      filteredData.forEach((info) => {
+        renderCountry(info);
+      });
+    });
+
+    allCountryBox.addEventListener("click", function (e) {
+      console.log(e.target);
+      const selectedCountry = e.target
+        .closest(".country__box")
+        .querySelector(".country__name").textContent;
+      console.log(selectedCountry);
+      const findCountry = data.find((info) =>
+        info.name.includes(selectedCountry)
+      );
+      console.log(findCountry);
+      detailsSection.textContent = "";
+      countrySection.style.display = "none";
+      detailsSection.style.display = "flex";
+      renderDetails(findCountry);
+    });
+
+    detailsSection.addEventListener("click", function (e) {
+      console.log(e.target.closest(".back__box"));
+      if (e.target.closest(".back__box")) {
+        countrySection.style.display = "flex";
+        detailsSection.style.display = "none";
+      }
+    });
+    const totalCountries = data.length;
+    if (counter === totalCountries) {
+      hideLoadingSpinner();
     }
-  });
+  } catch (error) {
+    // console.log('Error:', error);
+    alert(`${error}`);
+    console.log(error);
+    hideLoadingSpinner();
+  }
 };
 
 allCountries();

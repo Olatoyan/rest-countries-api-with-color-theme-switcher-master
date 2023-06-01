@@ -30,7 +30,7 @@ body {
 .container {
   /* max-width: 150rem; */
   background-color: #202c37;
-  transition: all 0.3s;
+  /* transition: all 0.3s; */
   /* max-height: 100vh; */
 }
 
@@ -182,6 +182,7 @@ body {
   display: flex;
   flex-direction: column;
   padding-left: 6rem;
+  height: 100vh;
 }
 .back__box {
   display: flex;
@@ -191,7 +192,8 @@ body {
   /* background-color: #2b3945; */
   padding: 1rem 2rem;
   border-radius: 0.5rem;
-  box-shadow: 1.2rem 1.2rem 2rem 0 rgba(0, 0, 0, 0.5);
+  /* box-shadow: 1.2rem 1.2rem 2rem 0 rgba(0, 0, 0, 0.5); */
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.5);
   cursor: pointer;
 }
 .arrow__back {
@@ -259,9 +261,109 @@ body {
   padding: 0.5rem 1.2rem;
   /* background-color: #2b3945; */
   cursor: pointer;
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.5);
 }
 
 /* ******************* */
 .details__section {
   display: none;
+}
+
+.loading-spinner {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.container,
+.header,
+.search__box,
+.search__input,
+.regions {
+  transition: all 0.3s;
+}
+
+/* MEDIA QUERIES */
+@media only screen and (max-width: 81.25em) {
+  .details__container {
+    gap: 8rem;
+  }
+
+  .details__info {
+    gap: 5rem;
+  }
+}
+@media only screen and (max-width: 68.75em) {
+  .details__container {
+    gap: 4rem;
+  }
+}
+@media only screen and (max-width: 62.5em) {
+  .details__section {
+    height: 100%;
+  }
+  .details__container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media only screen and (max-width: 43.75em) {
+  .header {
+    padding: 1.5rem 2rem;
+  }
+  .countries__section {
+    padding: 0 2rem;
+  }
+  .countries__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4rem;
+  }
+
+  .regions {
+    align-self: flex-start;
+  }
+  .primary__heading {
+    font-size: 1.6rem;
+  }
+  .sunny,
+  .moon {
+    width: 2rem;
+    height: 2rem;
+  }
+  .light__mode,
+  .dark__mode {
+    font-size: 1.3rem;
+  }
+
+  .details__section {
+    padding: 0 2rem;
+  }
+  .details__container {
+    align-items: flex-start;
+  }
+
+  .details__info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .details__img-box {
+    width: 100%;
+  }
 }
