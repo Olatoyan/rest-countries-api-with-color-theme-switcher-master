@@ -29,7 +29,6 @@ const hideLoadingSpinner = function () {
 };
 
 switchTheme.addEventListener("click", function (e) {
-  console.log(e.target);
   darkBox.classList.toggle("closed");
   lightBox.classList.toggle("closed");
   if (e.target.closest(".light__box")) {
@@ -65,12 +64,14 @@ const renderCountry = function (data) {
   }
   const html = `
           <div class="country__box  ">
-            <img class="country__img" src="${data.flag}" />
-            <h2 class="country__name">${data.name}</h2>
+            <img class="country__img" src="${data.flags.svg}" alt='${
+    data.flags.alt
+  }' />
+            <h2 class="country__name">${data.name.common}</h2>
             <div class="country__data">
               <p class="country__text">
                 Population:
-                <span class="country__span population">${data.population}</span>
+                <span class="country__span population">${data.population.toLocaleString()}</span>
               </p>
               <p class="country__text">
                 Region: <span class="country__span region">${data.region}</span>
@@ -107,18 +108,15 @@ const renderDetails = function (data) {
   if (!data.currencies) {
     currencies = `<span class="details__span details__currency">No Currency</span>`;
   } else {
-    currencies = `<span class="details__span details__currency">${data.currencies[0].name}</span>`;
+    currencies = `<span class="details__span details__currency">${
+      Object.values(data.currencies)[0].name
+    }</span>`;
   }
 
   if (!data.languages) {
     languages = `<span class="details__span details__languages">No Languages</span>`;
   } else {
-    languages = data.languages
-      .map(
-        (lang) =>
-          `<span class="details__span details__languages">${lang.name}</span>`
-      )
-      .join(", ");
+    languages = Object.values(data.languages).join(", ");
   }
 
   const html = `
@@ -139,29 +137,35 @@ const renderDetails = function (data) {
           <div class="details__img-box">
             <img
               class="details__img"
-              src="${data.flag}"
-              alt="image"
+              src="${data.flags.svg}"
+              alt="${data.flags.alt}"
             />
           </div>
           <div class="details__box">
-            <h2 class="details__name">${data.name}</h2>
+            <h2 class="details__name">${data.name.common}</h2>
             <div class="details__info">
               <div class="details__info-1">
                 <p class="details__text">
                   Native Name:
-                  <span class="details__span native__name">${data.nativeName}</span>
+                  <span class="details__span native__name">${
+                    Object.values(data.name.nativeName)[0].common
+                  }</span>
                 </p>
                 <p class="details__text">
                   Population:
-                  <span class="details__span details__population">${data.population}</span>
+                  <span class="details__span details__population">${data.population.toLocaleString()}</span>
                 </p>
                 <p class="details__text">
                   Region:
-                  <span class="details__span details__region">${data.region}</span>
+                  <span class="details__span details__region">${
+                    data.region
+                  }</span>
                 </p>
                 <p class="details__text">
                   Sub Region:
-                  <span class="details__span details__sub-region">${data.subregion}</span>
+                  <span class="details__span details__sub-region">${
+                    data.subregion
+                  }</span>
                 </p>
                 <p class="details__text">
                   Capital: ${capital}
@@ -170,7 +174,7 @@ const renderDetails = function (data) {
               <div class="details__info-2">
                 <p class="details__text">
                   Top Level Domain:
-                  <span class="details__span details__domain">${data.topLevelDomain[0]}</span>
+                  <span class="details__span details__domain">${data.tld}</span>
                 </p>
                 <p class="details__text">
                   Currencies:
@@ -199,9 +203,9 @@ const allCountries = async function () {
   try {
     showLoadingSpinner();
 
-    const res = await fetch("data.json");
+    // const res = await fetch("data.json");
+    const res = await fetch("https://restcountries.com/v3.1/all");
     const data = await res.json();
-
     let counter = 0;
     data.forEach((info) => {
       renderCountry(info);
@@ -253,7 +257,7 @@ const allCountries = async function () {
       const searchedValue =
         search.charAt(0).toUpperCase() + search.slice(1).toLowerCase();
       const filteredData = data.filter((item) =>
-        item.name.includes(searchedValue)
+        item.name.common.includes(searchedValue)
       );
       allCountryBox.textContent = "";
       filteredData.forEach((info) => {
@@ -265,8 +269,9 @@ const allCountries = async function () {
       const selectedCountry = e.target
         .closest(".country__box")
         .querySelector(".country__name").textContent;
+
       const findCountry = data.find((info) =>
-        info.name.includes(selectedCountry)
+        info.name.common.includes(selectedCountry)
       );
       detailsSection.textContent = "";
       countrySection.style.display = "none";
@@ -282,9 +287,13 @@ const allCountries = async function () {
 
       if (e.target.closest(".border__name")) {
         const name = e.target.textContent;
-        const findCountry = data.find((info) => info.alpha3Code.includes(name));
-        detailsSection.textContent = "";
-        renderDetails(findCountry);
+        const findCountry = data.find(
+          (info) => info.cca3 && info.cca3.includes(name)
+        );
+        if (findCountry) {
+          detailsSection.textContent = "";
+          renderDetails(findCountry);
+        }
       }
     });
     const totalCountries = data.length;
