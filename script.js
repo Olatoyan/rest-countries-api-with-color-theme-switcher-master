@@ -89,7 +89,7 @@ const renderDetails = function (data) {
   let borderCountries;
   let currencies;
   let languages;
-
+  let nativeName;
   let capital;
 
   if (!data.capital) {
@@ -117,6 +117,13 @@ const renderDetails = function (data) {
     languages = `<span class="details__span details__languages">No Languages</span>`;
   } else {
     languages = Object.values(data.languages).join(", ");
+  }
+  if (!data.name.nativeName) {
+    nativeName = ` <span class="details__span native__name">No Native Name</span>`;
+  } else {
+    nativeName = ` <span class="details__span native__name">${
+      Object.values(data.name.nativeName)[0].common
+    }</span>`;
   }
 
   const html = `
@@ -147,9 +154,7 @@ const renderDetails = function (data) {
               <div class="details__info-1">
                 <p class="details__text">
                   Native Name:
-                  <span class="details__span native__name">${
-                    Object.values(data.name.nativeName)[0].common
-                  }</span>
+                 ${nativeName}
                 </p>
                 <p class="details__text">
                   Population:
@@ -213,6 +218,7 @@ const allCountries = async function () {
     });
 
     regionsSelect.addEventListener("change", function () {
+      searchInput.value = "";
       const selectedRegion = regionsSelect.value;
       if (selectedRegion === "africa") {
         const filteredData = data.filter((item) => item.region === "Africa");
@@ -263,6 +269,8 @@ const allCountries = async function () {
       filteredData.forEach((info) => {
         renderCountry(info);
       });
+
+      regionsSelect.value = "all";
     });
 
     allCountryBox.addEventListener("click", function (e) {
