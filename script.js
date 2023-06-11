@@ -277,14 +277,24 @@ const allCountries = async function () {
       const selectedCountry = e.target
         .closest(".country__box")
         .querySelector(".country__name").textContent;
-
-      const findCountry = data.find((info) =>
+      const findCountry = data.filter((info) =>
         info.name.common.includes(selectedCountry)
       );
-      detailsSection.textContent = "";
-      countrySection.style.display = "none";
-      detailsSection.style.display = "flex";
-      renderDetails(findCountry);
+      if (findCountry.length === 1) {
+        detailsSection.textContent = "";
+        countrySection.style.display = "none";
+        detailsSection.style.display = "flex";
+        renderDetails(findCountry[0]);
+      } else {
+        findCountry.forEach((find) => {
+          if (find.name.common === selectedCountry) {
+            detailsSection.textContent = "";
+            countrySection.style.display = "none";
+            detailsSection.style.display = "flex";
+            renderDetails(find);
+          }
+        });
+      }
     });
 
     detailsSection.addEventListener("click", function (e) {
